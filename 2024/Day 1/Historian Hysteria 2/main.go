@@ -16,6 +16,27 @@ func check(e error) {
 	}
 }
 
+func orderedAppend(number_list []int, number int) []int {
+	list_length := len(number_list)
+
+	if list_length == 0 {
+		return append(number_list, number)
+	}
+
+	left := 0
+	right := list_length
+
+	for left < right {
+		middle := int(uint(right+left) >> 1)
+		if number_list[middle] <= number {
+			left = middle + 1
+		} else {
+			right = middle
+		}
+	}
+	return slices.Insert(number_list, left, number)
+}
+
 func main() {
 	file, error := os.Open("input.txt")
 	check(error)
@@ -35,13 +56,10 @@ func main() {
 		second_number, error := strconv.Atoi(strings.Replace(numbers[1], " ", "", -1))
 		check(error)
 
-		first_line = append(first_line, first_number)
-		second_line = append(second_line, second_number)
+		first_line = orderedAppend(first_line, first_number)
+		second_line = orderedAppend(second_line, second_number)
 		occurences_map[second_number] += 1
 	}
-
-	slices.Sort(first_line)
-	slices.Sort(second_line)
 
 	similarity_score := 0
 
